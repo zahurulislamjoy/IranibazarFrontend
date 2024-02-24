@@ -1,0 +1,30 @@
+// auth.js
+import { createContext, useContext, useState } from 'react';
+
+const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setLoggedIn] = useState(!!JSON.parse(
+localStorage.getItem("x-access-token")
+));
+
+  const login = (token) => {
+    localStorage.setItem("x-access-token",JSON.stringify(token));
+    setLoggedIn(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("x-access-token");
+    setLoggedIn(false);
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };
